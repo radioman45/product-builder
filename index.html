@@ -88,6 +88,7 @@
       list-style: none;
     }
     nav a {
+      white-space: nowrap;
       color: var(--text-muted);
       text-decoration: none;
       font-size: 0.95rem;
@@ -243,8 +244,10 @@
 
     /* 모바일 대응 */
     @media (max-width: 600px) {
-      nav ul { gap: 10px; }
-      nav a { font-size: 0.8rem; }
+      /* 좁은 화면에서는 페이지 내 이동 링크를 숨기고 다른 페이지 링크만 남김 */
+      .anchor-link { display: none; }
+      nav ul { gap: 14px; }
+      nav a { font-size: 0.9rem; }
       .nav-right { gap: 10px; }
       .theme-toggle { width: 34px; height: 34px; font-size: 1rem; }
       .hero { padding: 64px 0 56px; }
@@ -259,10 +262,11 @@
         <a href="#" class="logo">조<span>코딩</span></a>
         <div class="nav-right">
           <ul>
-            <li><a href="#about">소개</a></li>
-            <li><a href="#content">콘텐츠</a></li>
-            <li><a href="#for-you">추천 대상</a></li>
+            <li class="anchor-link"><a href="#about">소개</a></li>
+            <li class="anchor-link"><a href="#content">콘텐츠</a></li>
+            <li class="anchor-link"><a href="#for-you">추천 대상</a></li>
             <li><a href="lotto.html">로또 추천</a></li>
+            <li><a href="contact.html">제휴 문의</a></li>
           </ul>
           <button class="theme-toggle" type="button" aria-label="테마 전환">🌙</button>
         </div>

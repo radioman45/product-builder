@@ -34,9 +34,15 @@
     });
   }
 
+  // 선택한 테마를 select 드롭다운·스크롤바 등 브라우저 기본 요소에도 반영
+  function apply(theme) {
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+  }
+
   const saved = getSaved();
   if (saved === "light" || saved === "dark") {
-    root.dataset.theme = saved;
+    apply(saved);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -44,7 +50,7 @@
     document.querySelectorAll(".theme-toggle").forEach((btn) => {
       btn.addEventListener("click", () => {
         const next = currentTheme() === "dark" ? "light" : "dark";
-        root.dataset.theme = next;
+        apply(next);
         save(next);
         updateButtons();
       });
@@ -52,7 +58,13 @@
   });
 
   // 사용자가 직접 고르지 않았다면 운영체제 테마 변경을 따라간다
-  media.addEventListener("change", () => {
+  const onSystemChange = () => {
     if (!root.dataset.theme) updateButtons();
-  });
+  };
+  // 구형 Safari는 addEventListener 대신 addListener만 지원
+  if (media.addEventListener) {
+    media.addEventListener("change", onSystemChange);
+  } else {
+    media.addListener(onSystemChange);
+  }
 })();
