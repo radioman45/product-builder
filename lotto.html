@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또 번호 추천</title>
+  <meta name="description" content="버튼 하나로 로또 6/45 번호를 무작위로 추천해 드립니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* 색상 토큰 */
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1a1d24;
+      --text-muted: #5b6270;
+      --accent: #2f6bff;
+      --border: #e3e6ec;
+      /* 동행복권 공식 공 색상 기준 */
+      --ball-1: #fbc400;
+      --ball-2: #69c8f2;
+      --ball-3: #ff7272;
+      --ball-4: #aaaaaa;
+      --ball-5: #b0d840;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1115;
+        --card: #171a21;
+        --text: #eceef2;
+        --text-muted: #a0a7b4;
+        --accent: #6b95ff;
+        --border: #2a2f3a;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1115;
+      --card: #171a21;
+      --text: #eceef2;
+      --text-muted: #a0a7b4;
+      --accent: #6b95ff;
+      --border: #2a2f3a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      word-break: keep-all;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .back {
+      display: inline-block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .back:hover { color: var(--accent); }
+
+    h1 {
+      font-size: clamp(1.75rem, 6vw, 2.25rem);
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    /* 게임 수 선택 + 버튼 */
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .controls label {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    select {
+      font: inherit;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+    }
+    .btn {
+      flex: 1;
+      min-width: 180px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); opacity: 0.92; }
+    .btn:active { transform: translateY(0); }
+
+    /* 결과 영역 */
+    .results {
+      margin-top: 24px;
+      display: grid;
+      gap: 12px;
+    }
+    .empty {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 24px 0;
+      font-size: 0.95rem;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .row-label {
+      font-weight: 700;
+      color: var(--text-muted);
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .balls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* 로또 공 */
+    .ball {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      box-shadow: inset -3px -4px 8px rgba(0, 0, 0, 0.18);
+      animation: pop 0.35s ease backwards;
+    }
+    .ball.c1 { background: var(--ball-1); }
+    .ball.c2 { background: var(--ball-2); }
+    .ball.c3 { background: var(--ball-3); }
+    .ball.c4 { background: var(--ball-4); }
+    .ball.c5 { background: var(--ball-5); }
+
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .notice {
+      margin-top: 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    /* 모바일 대응 */
+    @media (max-width: 420px) {
+      .panel { padding: 18px; }
+      .ball { width: 36px; height: 36px; font-size: 0.9rem; }
+      .balls { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="index.html">← 조코딩 소개로 돌아가기</a>
+    <h1>🍀 로또 번호 추천</h1>
+    <p class="subtitle">버튼을 누르면 1~45 중 겹치지 않는 번호 6개를 뽑아 드려요.</p>
+
+    <div class="panel">
+      <div class="controls">
+        <label for="gameCount">게임 수</label>
+        <select id="gameCount">
+          <option value="1">1게임</option>
+          <option value="3">3게임</option>
+          <option value="5" selected>5게임</option>
+        </select>
+        <button class="btn" id="drawBtn" type="button">번호 추천받기</button>
+      </div>
+
+      <div class="results" id="results" aria-live="polite">
+        <p class="empty">아직 뽑은 번호가 없어요. 버튼을 눌러 보세요!</p>
+      </div>
+    </div>
+
+    <p class="notice">무작위로 생성한 번호이며 당첨을 보장하지 않습니다. 재미로만 즐겨 주세요.</p>
+  </div>
+
+  <script>
+    const LABELS = ["A", "B", "C", "D", "E"];
+
+    // 0 이상 max 미만의 정수를 암호학적 난수로 생성
+    function randomInt(max) {
+      const buf = new Uint32Array(1);
+      crypto.getRandomValues(buf);
+      return buf[0] % max;
+    }
+
+    // 1~45 중 중복 없이 6개를 뽑아 오름차순 정렬 (피셔-예이츠 셔플)
+    function drawNumbers() {
+      const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = randomInt(i + 1);
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool.slice(0, 6).sort((a, b) => a - b);
+    }
+
+    // 번호 구간별 공 색상 클래스 (1~10, 11~20, 21~30, 31~40, 41~45)
+    function colorClass(num) {
+      return "c" + Math.min(Math.ceil(num / 10), 5);
+    }
+
+    function render(count) {
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      for (let g = 0; g < count; g++) {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const label = document.createElement("span");
+        label.className = "row-label";
+        label.textContent = LABELS[g];
+        row.appendChild(label);
+
+        const balls = document.createElement("div");
+        balls.className = "balls";
+
+        drawNumbers().forEach((num, idx) => {
+          const ball = document.createElement("span");
+          ball.className = "ball " + colorClass(num);
+          ball.textContent = num;
+          // 공이 하나씩 순서대로 나타나도록 지연
+          ball.style.animationDelay = (g * 0.08 + idx * 0.06) + "s";
+          balls.appendChild(ball);
+        });
+
+        row.appendChild(balls);
+        results.appendChild(row);
+      }
+    }
+
+    document.getElementById("drawBtn").addEventListener("click", () => {
+      const count = Number(document.getElementById("gameCount").value);
+      render(count);
+    });
+  </script>
+</body>
+</html>
