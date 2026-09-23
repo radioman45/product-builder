@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>조코딩 소개</title>
   <meta name="description" content="누구나 쉽게 배우는 코딩 교육 유튜브 채널, 조코딩을 소개합니다." />
+  <meta name="color-scheme" content="light dark" />
+  <script src="theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -91,6 +93,25 @@
       font-size: 0.95rem;
     }
     nav a:hover { color: var(--accent); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* 테마 전환 버튼 */
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .theme-toggle:hover { transform: rotate(-15deg); }
 
     /* 히어로 */
     .hero {
@@ -222,8 +243,10 @@
 
     /* 모바일 대응 */
     @media (max-width: 600px) {
-      nav ul { gap: 12px; }
-      nav a { font-size: 0.85rem; }
+      nav ul { gap: 10px; }
+      nav a { font-size: 0.8rem; }
+      .nav-right { gap: 10px; }
+      .theme-toggle { width: 34px; height: 34px; font-size: 1rem; }
       .hero { padding: 64px 0 56px; }
       section { padding: 56px 0; }
     }
@@ -234,12 +257,15 @@
     <div class="container">
       <nav>
         <a href="#" class="logo">조<span>코딩</span></a>
-        <ul>
-          <li><a href="#about">소개</a></li>
-          <li><a href="#content">콘텐츠</a></li>
-          <li><a href="#for-you">추천 대상</a></li>
-          <li><a href="lotto.html">로또 추천</a></li>
-        </ul>
+        <div class="nav-right">
+          <ul>
+            <li><a href="#about">소개</a></li>
+            <li><a href="#content">콘텐츠</a></li>
+            <li><a href="#for-you">추천 대상</a></li>
+            <li><a href="lotto.html">로또 추천</a></li>
+          </ul>
+          <button class="theme-toggle" type="button" aria-label="테마 전환">🌙</button>
+        </div>
       </nav>
     </div>
   </header>

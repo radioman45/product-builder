@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로또 번호 추천</title>
   <meta name="description" content="버튼 하나로 로또 6/45 번호를 무작위로 추천해 드립니다." />
+  <meta name="color-scheme" content="light dark" />
+  <script src="theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -62,13 +64,32 @@
       max-width: 560px;
     }
 
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
     .back {
-      display: inline-block;
       color: var(--text-muted);
       text-decoration: none;
       font-size: 0.9rem;
-      margin-bottom: 20px;
     }
+
+    /* 테마 전환 버튼 */
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .theme-toggle:hover { transform: rotate(-15deg); }
     .back:hover { color: var(--accent); }
 
     h1 {
@@ -198,7 +219,10 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="back" href="index.html">← 조코딩 소개로 돌아가기</a>
+    <div class="topbar">
+      <a class="back" href="index.html">← 조코딩 소개로 돌아가기</a>
+      <button class="theme-toggle" type="button" aria-label="테마 전환">🌙</button>
+    </div>
     <h1>🍀 로또 번호 추천</h1>
     <p class="subtitle">버튼을 누르면 1~45 중 겹치지 않는 번호 6개를 뽑아 드려요.</p>
 
